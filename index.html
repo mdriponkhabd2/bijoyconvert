@@ -116,6 +116,48 @@ function copyText() {
   alert('Bijoy টেক্সট কপি হয়েছে! Illustrator এ Paste করুন');
 }
 </script>
+  <script>
+
+function convertToBijoy() {
+
+  if(typeof ConvertToASCII === 'undefined') {
+    alert('Converter Engine Load হয়নি! Internet connection check করুন');
+    return;
+  }
+
+  let unicodeText = document.getElementById("unicodeInput").value;
+
+  if(unicodeText.trim() === "") {
+    alert("Unicode লিখুন");
+    return;
+  }
+
+  let bijoy = ConvertToASCII(unicodeText);
+  document.getElementById("bijoyOutput").value = bijoy;
+}
+
+function convertToUnicode() {
+
+  let bijoyText = document.getElementById("bijoyOutput").value;
+
+  if(bijoyText.trim() === "") {
+    alert("Bijoy লিখুন");
+    return;
+  }
+
+  let unicode = ConvertToUnicode(bijoyText);
+  document.getElementById("unicodeInput").value = unicode;
+}
+
+function copyText() {
+  let output = document.getElementById("bijoyOutput");
+  output.select();
+  document.execCommand("copy");
+  alert("Copied! Illustrator এ Paste করুন");
+}
+
+</script>
+
 
 </body>
 </html>
