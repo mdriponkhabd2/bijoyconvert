@@ -2,8 +2,9 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Unicode to Bijoy Converter</title>
+  <title>Unicode to Bijoy Converter (Illustrator Ready)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       margin: 0;
@@ -46,13 +47,9 @@
       margin-bottom: 20px;
     }
 
-    .title h2 {
-      margin-bottom: 8px;
-    }
-
     textarea {
       width: 100%;
-      height: 150px;
+      height: 160px;
       padding: 12px;
       font-size: 15px;
       border-radius: 6px;
@@ -84,6 +81,11 @@
       color: #fff;
     }
 
+    .btn-copy {
+      background: #ff9800;
+      color: #fff;
+    }
+
     footer {
       background: #111;
       color: #bbb;
@@ -91,6 +93,14 @@
       padding: 20px;
       margin-top: 40px;
       font-size: 13px;
+    }
+
+    .note {
+      background: #e8f4ff;
+      padding: 12px;
+      border-left: 4px solid #1e88e5;
+      margin-top: 15px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -100,8 +110,8 @@
   <h1>Bijoy Converter</h1>
   <nav>
     <a href="#">Home</a>
-    <a href="#">Unicode to Bijoy</a>
-    <a href="#">Bijoy to Unicode</a>
+    <a href="#">Unicode → Bijoy</a>
+    <a href="#">Bijoy → Unicode</a>
     <a href="#">Contact</a>
   </nav>
 </header>
@@ -109,47 +119,68 @@
 <div class="container">
   <div class="title">
     <h2>Unicode to Bijoy Converter</h2>
-    <p>ইউনিকোড বাংলা টেক্সটকে বিজয় ফন্টে কনভার্ট করুন সহজেই</p>
+    <p>Adobe Illustrator, CorelDraw Compatible Real Bijoy ANSI Converter</p>
   </div>
 
   <label><strong>Unicode Input</strong></label>
-  <textarea id="unicodeInput" placeholder="এখানে ইউনিকোড টেক্সট লিখুন..."></textarea>
+  <textarea id="unicodeInput" placeholder="এখানে ইউনিকোড বাংলা লিখুন..."></textarea>
 
   <div class="btn-group">
-    <button class="btn-primary" onclick="unicodeToBijoy()">Unicode to Bijoy</button>
-    <button class="btn-success" onclick="bijoyToUnicode()">Bijoy to Unicode</button>
+    <button class="btn-primary" onclick="unicodeToBijoy()">Unicode ➜ Bijoy</button>
+    <button class="btn-success" onclick="bijoyToUnicode()">Bijoy ➜ Unicode</button>
+    <button class="btn-copy" onclick="copyBijoy()">Copy Bijoy Text</button>
   </div>
 
-  <label><strong>Bijoy Output</strong></label>
-  <textarea id="bijoyOutput" placeholder="এখানে বিজয় আউটপুট দেখাবে..."></textarea>
+  <label><strong>Bijoy Output (Illustrator Ready)</strong></label>
+  <textarea id="bijoyOutput" placeholder="এখানে বিজয় ANSI আউটপুট আসবে..."></textarea>
+
+  <div class="note">
+    ⚠ Illustrator এ Paste করার আগে Bijoy / SutonnyMJ Font Select করুন।<br>
+    Preferences → Type → Show Indic Options ✔ ON রাখুন।
+  </div>
 </div>
 
 <footer>
-  <p>© 2026 Bijoy Converter | All Rights Reserved</p>
+  <p>© 2026 Bijoy Converter | Illustrator Ready Edition</p>
 </footer>
 
+<!-- REAL BIJOY CONVERTER ENGINE -->
+<script src="https://cdn.jsdelivr.net/gh/sh4hids/bijoy-to-unicode@master/bijoy-to-unicode.min.js"></script>
+
 <script>
-  // Demo conversion (Placeholder Logic)
-  // Real Bijoy conversion needs mapping library
 
-  function unicodeToBijoy() {
-    const input = document.getElementById('unicodeInput').value;
-    if(input.trim() === '') {
-      alert('অনুগ্রহ করে ইউনিকোড টেক্সট লিখুন');
-      return;
-    }
-    // Temporary demo output
-    document.getElementById('bijoyOutput').value = 'Converted (Bijoy): ' + input;
+function unicodeToBijoy() {
+  const input = document.getElementById('unicodeInput').value;
+
+  if(input.trim() === '') {
+    alert('Unicode টেক্সট লিখুন');
+    return;
   }
 
-  function bijoyToUnicode() {
-    const input = document.getElementById('bijoyOutput').value;
-    if(input.trim() === '') {
-      alert('অনুগ্রহ করে বিজয় টেক্সট লিখুন');
-      return;
-    }
-    document.getElementById('unicodeInput').value = 'Converted (Unicode): ' + input;
+  // REAL ANSI BIJOY CONVERSION
+  const output = ConvertToASCII(input);
+  document.getElementById('bijoyOutput').value = output;
+}
+
+function bijoyToUnicode() {
+  const input = document.getElementById('bijoyOutput').value;
+
+  if(input.trim() === '') {
+    alert('Bijoy টেক্সট লিখুন');
+    return;
   }
+
+  const output = ConvertToUnicode(input);
+  document.getElementById('unicodeInput').value = output;
+}
+
+function copyBijoy() {
+  const textArea = document.getElementById('bijoyOutput');
+  textArea.select();
+  document.execCommand('copy');
+  alert('Bijoy Text Copied! Illustrator এ Paste করুন');
+}
+
 </script>
 
 </body>
