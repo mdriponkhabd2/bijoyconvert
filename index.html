@@ -1,124 +1,38 @@
-// Bijoy to Unicode mapping
-// FIX: Removed several duplicate keys from the map to resolve "An object literal cannot have multiple properties with the same name" error.
-const bijoyToUnicodeMap: { [key: string]: string } = {
-  'g': '্', 'A': 'অ', 'B': 'ই', 'C': 'ঈ', 'D': 'উ', 'E': 'ঊ', 'K': 'ক', 'L': 'খ', 'M': 'গ', 'N': 'ঘ', 'O': 'ঙ', 'P': 'চ', 'Q': 'ছ',
-  'R': 'জ', 'S': 'ঝ', 'T': 'ঞ', 'U': 'ট', 'V': 'ঠ', 'W': 'ড', 'X': 'ঢ', 'Y': 'ণ', 'Z': 'ত',
-  '`': 'থ', 'a': 'দ', 'b': 'ধ', 'c': 'ন', 'd': 'প', 'e': 'ফ', 'f': 'ব', 'h': 'ম',
-  'i': 'য', 'j': 'র', 'k': 'ল', 'l': 'শ', 'm': 'ষ', 'n': 'স', 'o': 'হ', 'p': 'ড়', 'q': 'ঢ়',
-  'r': 'য়', 's': 'ৎ', '_': 'ৎ', 't': 'ং', 'u': 'ঃ', 'v': 'া', 'w': 'ি', 'x': 'ী', 'y': 'ু',
-  'z': 'ূ', '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭',
-  '8': '৮', '9': '৯', '$': '৳', '|': '।',
-  // Kar and Fola - These override the vowel mappings for keys F, G, H, I, J
-  'F': 'ৃ', 'G': 'ে', 'H': 'ৈ', 'I': 'ো', 'J': 'ৌ',
-  // Conjuncts with special characters in Bijoy
-  '±': 'ঙ্ক', '²': 'ঙ্ক্ষ', '³': 'ঙ্ক্ত', '´': 'ঙ্খা', 'µ': 'ঙ্খ', '¶': 'င်္ဂ', '·': 'ঙ্গ',
-  '¸': 'ঙ্গা', '¹': 'ঙ্ঘ', 'º': 'ঙ্ম', '»': 'ঞ্চ', '¼': 'ঞ্ছ', '½': 'ঞ্জ', '¾': 'ঞ্ঝ',
-  '¿': 'জ্ঞ', 'À': 'জ্ঝ', 'Á': 'জ্জ', 'Ã': 'ক্ট', 'Ä': 'ক্ত', 'Å': 'ক্স',
-  'Æ': 'ক্ট্র', 'Ç': 'ষ্ম', 'È': 'क्ष्म', 'Ì': 'ত্ত্ব',
-  'Í': 'ত্ত', 'Î': 'ত্ম', 'Ï': 'ত্র', 'Ð': 'দ্দ', 'Ñ': 'দ্ধ', 'Ò': 'দ্ম', 'Õ': 'ন্ত্র',
-  'Ø': 'ন্থ', 'Ù': 'ন্দ', 'Ú': 'ন্ধ', 'Û': 'ন্স', 'Ü': 'প্ট',
-  'Ý': 'ড্ড', 'Þ': 'প্প', 'ß': 'ন্ম', 'ÿ': 'ক্ষ'
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bijoy ↔ Unicode Converter</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const bijoyComplexMap: { [key: string]: string } = {
-  'gh': 'ঘ', 'th': 'থ', 'dh': 'ধ', 'ph': 'ফ', 'bh': 'ভ', 'NG': 'ঙ', 'Ng': 'ঙ',
-  'JH': 'ঝ', 'TH': 'ঠ', 'DH': 'ঢ', 'SH': 'ষ', 'Rh': 'ঢ়', 'kh': 'খ', 'ch': 'চ', 'jh': 'ঝ'
-};
+<div class="wrapper">
+  <div class="card">
+    <h1>Bijoy ↔ Unicode Converter</h1>
+    <p class="subtitle">Fast & Accurate Bengali Text Converter</p>
 
-export function convertBijoyToUnicode(bijoyText: string): string {
-  // Handle complex mappings first
-  for (const key in bijoyComplexMap) {
-    bijoyText = bijoyText.replace(new RegExp(key, "g"), bijoyComplexMap[key]);
-  }
-  
-  let text = bijoyText.split('');
-  
-  for (let i = 0; i < text.length; i++) {
-    // Handle "Ref" (j)
-    if (text[i] === 'j' && i > 0 && bijoyToUnicodeMap[text[i - 1]] && bijoyToUnicodeMap[text[i-1]] !== '্') {
-        let temp = text[i-1];
-        text[i-1] = 'র্';
-        text[i] = temp;
-        continue;
-    }
-    
-    // Handle i-kar (w)
-    if (text[i] === 'w' && i > 0) {
-      let charToMove = text.splice(i, 1)[0];
-      let targetIndex = i - 1;
-      
-      // Move before the consonant cluster
-      while (targetIndex > 0 && text[targetIndex] === 'g') {
-        targetIndex--;
-      }
-      text.splice(targetIndex, 0, charToMove);
-    }
-  }
-  
-  return text.map(char => bijoyToUnicodeMap[char] || char).join('');
-}
+    <div class="textarea-group">
+      <label>Input Text</label>
+      <textarea id="inputText" placeholder="Type your text here..."></textarea>
+    </div>
 
+    <div class="buttons">
+      <button class="primary" onclick="convertToUnicode()">Bijoy → Unicode</button>
+      <button class="primary" onclick="convertToBijoy()">Unicode → Bijoy</button>
+      <button class="secondary" onclick="copyText()">Copy</button>
+      <button class="danger" onclick="clearText()">Clear</button>
+    </div>
 
-// Unicode to Bijoy mapping
-const unicodeToBijoyMap: { [key: string]: string } = {
-  '্': 'g', 'অ': 'A', 'ই': 'B', 'ঈ': 'C', 'উ': 'D', 'ঊ': 'E', 'ঋ': 'F', 'এ': 'G',
-  'ঐ': 'H', 'ও': 'I', 'ঔ': 'J', 'ক': 'K', 'খ': 'L', 'গ': 'M', 'ঘ': 'N', 'ঙ': 'O',
-  'চ': 'P', 'ছ': 'Q', 'জ': 'R', 'ঝ': 'S', 'ঞ': 'T', 'ট': 'U', 'ঠ': 'V', 'ড': 'W',
-  'ঢ': 'X', 'ণ': 'Y', 'ত': 'Z', 'থ': '`', 'দ': 'a', 'ধ': 'b', 'ন': 'c', 'প': 'd',
-  'ফ': 'e', 'ব': 'f', 'ভ': 'g', 'ম': 'h', 'য': 'i', 'র': 'j', 'ল': 'k', 'শ': 'l',
-  'ষ': 'm', 'স': 'n', 'হ': 'o', 'ড়': 'p', 'ঢ়': 'q', 'য়': 'r', 'ৎ': 's', 'ং': 't',
-  'ঃ': 'u', 'ঁ': 'P',
-  'া': 'v', 'ি': 'w', 'ী': 'x', 'ু': 'y', 'ূ': 'z',
-  'ৃ': 'F', 'ে': 'G', 'ৈ': 'H', 'ো': 'I', 'ৌ': 'J',
-  '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7',
-  '৮': '8', '৯': '9', '।': '|', '৳': '$'
-};
+    <div class="textarea-group">
+      <label>Output Text</label>
+      <textarea id="outputText" placeholder="Converted text will appear here..."></textarea>
+    </div>
 
-const unicodeConjuncts: { [key: string]: string } = {
-  'ঙ্ক': '±', 'ঙ্ক্ষ': '²', 'ঙ্ক্ত': '³', 'ঙ্খ': 'µ', 'င်္ဂ': '¶', 'ঙ্গ': '·',
-  'ঙ্গা': '¸', 'ঙ্ঘ': '¹', 'ঙ্ম': 'º', 'ঞ্চ': '»', 'ঞ্ছ': '¼', 'ঞ্জ': '½',
-  'ঞ্ঝ': '¾', 'জ্ঞ': '¿', 'জ্জ': 'Á', 'ক্ট': 'Ã', 'ক্ত': 'Ä', 'ক্স': 'Å',
-  'ক্ট্র': 'Æ', 'ষ্ম': 'Ç', 'ত্ত্ব': 'Ì', 'ত্ত': 'Í', 'ত্ম': 'Î', 'ত্র': 'Ï',
-  'দ্দ': 'Ð', 'দ্ধ': 'Ñ', 'দ্ম': 'Ò', 'ন্ত্র': 'Õ', 'ন্থ': 'Ø', 'ন্দ': 'Ù',
-  'ন্ধ': 'Ú', 'ন্স': 'Û', 'প্ট': 'Ü', 'ড্ড': 'Ý', 'প্প': 'Þ', 'ন্ম': 'ß',
-  'ক্ষ': 'ÿ', 'হ্ম': 'ü', 'হৃ': 'ú', 'হ্ন': 'û', 'হ্ল': 'þ', 'হ्‍य': 'ý', 'হ্ব': 'à'
-};
+  </div>
+</div>
 
-
-export function convertUnicodeToBijoy(unicodeText: string): string {
-    let text = unicodeText;
-
-    // Handle 'Reph' (র্) first
-    text = text.replace(/(\u0020|\n|\r)?(\S*?)র‍্(\S)/g, "$1$2$3j");
-    text = text.replace(/(\u0020|\n|\r)?(\S*?)র্(\S)/g, "$1$2$3j");
-
-    // Replace conjuncts
-    for (const key in unicodeConjuncts) {
-        text = text.replace(new RegExp(key, "g"), unicodeConjuncts[key]);
-    }
-
-    let convertedChars = "";
-    for (let i = 0; i < text.length; i++) {
-        convertedChars += unicodeToBijoyMap[text[i]] || text[i];
-    }
-    text = convertedChars;
-
-    // Handle i-kar (w) reordering
-    let i = 0;
-    while (i < text.length) {
-        if (text[i] === 'w') {
-            let j = i - 1;
-            while (j >= 0 && text[j] === 'g') {
-                j--;
-            }
-            if (j >= 0) {
-                const w = text.slice(i, i + 1);
-                text = text.slice(0, i) + text.slice(i + 1); // remove w
-                text = text.slice(0, j) + w + text.slice(j); // insert w at correct position
-            }
-        }
-        i++;
-    }
-    
-    return text;
-}
+<script src="script.js"></script>
+</body>
+</html>
